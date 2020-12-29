@@ -3,11 +3,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LogisticRegression
 from collections import defaultdict
 
 
-class Model:
+class DataViz:
     def __init__(self, train_set=None, test_set=None):
         self.train_set = train_set
         self.test_set = test_set
@@ -42,13 +41,3 @@ class Model:
                      data=pd.melt(df, ['index']),
                      palette=palette,
                      **kwargs)
-
-def test():
-    mymodel = Model()
-    mymodel.import_train_set('sat.trn')
-    mymodel.import_test_set('sat.tst')
-
-    fig, axis = plt.subplots(ncols=2)
-    mymodel.plot_spectrum(16, [0, 1, 2, 3], False, ax=axis[0])
-    mymodel.plot_spectrum(16, [0, 1, 2, 3], ax = axis[1])
-    plt.show()
