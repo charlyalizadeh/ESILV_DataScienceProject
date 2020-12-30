@@ -41,3 +41,46 @@ class DataViz:
                      data=pd.melt(df, ['index']),
                      palette=palette,
                      **kwargs)
+
+
+    def bar_plot_label(self, label_index = 36, train=True) :
+        #label_index is the 37th column in the training and testing set
+        labels = {1 : 'Red soil',
+                  2 : 'Cotton crop',
+                  3 : 'Grey soil',
+                  4 : 'Damp grey \n soil',
+                  5 : 'Soil with \n vegetation stubble',
+                  6 : 'Mixture\n class',
+                  7 : 'Very damp\n grey soil'}
+        
+        mat_value = self.train_set if train else self.test_set
+        
+        for _ in range(len(mat_value)) :
+            unique, counts = np.unique(mat_value[:,label_index], return_counts=True)
+        
+        #Add class 6 as there are no examples with class 6 in our dataset
+        unique = np.insert(unique,5, 6.0)
+        counts = np.insert(counts,5, 0)
+
+        #Changing font of labels
+        hfont = {'fontname' : 'Microsoft New Tai Lue'}
+
+        #Plot barcharts
+        fig = plt.figure(figsize=(10,5))
+        plt.bar(unique,counts, color = 'blue', width=1)
+        plt.xlabel("Label", **hfont)
+        plt.ylabel("No. of pixels labelled", **hfont)
+        plt.title("Bar Plot of classes")
+        #Change xticks to plot labels names instead of numbers
+        plt.xticks(unique, labels.values(), **hfont)
+        
+        plt.tight_layout()
+        plt.show()
+            
+
+def test () :
+    test = DataViz()
+    test.import_train_set("sat.trn")
+    test.bar_plot_label()
+
+test()
