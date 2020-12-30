@@ -7,7 +7,7 @@
 * [X] Spectrum visualization  
 * [ ] Bar plot of class  
 * [ ] PCA and plot  
-* [ ] Plot on a line pixel value depending of pixel position and spectrum
+* [X] Plot on a line pixel value depending of pixel position and spectrum
 
 ### Model
 
