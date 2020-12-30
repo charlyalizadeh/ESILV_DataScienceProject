@@ -4,7 +4,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from collections import defaultdict
-
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 class DataViz:
     def __init__(self, train_set=None, test_set=None):
@@ -76,11 +77,71 @@ class DataViz:
         
         plt.tight_layout()
         plt.show()
-            
 
-def test () :
+    def pca (self, train = True, number_components = 2) :
+        mat_value = self.train_set if train else self.test_set
+
+        #Store the value in a DataFrame
+        df = pd.DataFrame(data=mat_value, index = [i for i in range(len(mat_value))])
+        
+        #Store the features values
+        df_features = df.iloc[:, 0:36].values
+        #Store the target values
+        df_target = df.iloc[:,36].values
+
+        #Scale the features
+        df_features = StandardScaler().fit_transform(df_features)
+
+        #Apply PCA on features
+        pca = PCA(n_components=number_components)
+        principal_components = pca.fit_transform(df_features)
+
+        #Store the PCA values in a DataFrame
+        principal_comp_df = pd.DataFrame(data=principal_components, columns=['pc_1','pc_2'])
+
+        #Add the target values
+        final_df = pd.concat([principal_comp_df, df.iloc[:,36]], axis = 1)
+        final_df = final_df.rename(columns={36:"target"})
+
+        print(final_df.head())
+
+        #2D projection
+        
+        fig = plt.figure(figsize=(8,8))
+        ax = fig.add_subplot(1,1,1)
+        ax.set_xlabel('Principal Component 1', fontsize = 15)
+        ax.set_ylabel('Principal Component 2', fontsize = 15)
+        ax.set_title('PCA with 2 Components', fontsize = 20)
+
+        targets =[1.0,2.0,3.0,4.0,5.0,6.0,7.0]
+        #targets= ['Red soil','Cotton crop','Grey soil','Damp grey soil','Soil with vegetation stubble','Mixture class','Very damp grey soil']
+        
+        #colors for our different labels
+        colors = ['crimson', 'bisque', 'silver', 'dimgrey', 'limegreen', 'royalblue', 'blueviolet']
+        
+        for target, color in zip(targets,colors):
+            indicesToKeep = final_df['target'] == target
+            ax.scatter(final_df.loc[indicesToKeep, 'pc_1']
+               , final_df.loc[indicesToKeep, 'pc_2']
+               , c = color
+               , s = 50)
+
+        ax.legend(targets)
+        ax.grid()
+        plt.tight_layout()
+        plt.show()
+        
+
+def test_1 () :
     test = DataViz()
     test.import_train_set("sat.trn")
     test.bar_plot_label()
 
-test()
+
+def test_2 () :
+    test = DataViz()
+    test.import_train_set("sat.trn")
+    test.pca()
+
+test_1()
+test_2()
