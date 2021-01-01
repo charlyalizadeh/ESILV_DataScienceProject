@@ -78,7 +78,7 @@ class DataViz:
         plt.tight_layout()
         plt.show()
 
-    def pca (self, train = True, number_components = 2) :
+    def pca (self, train = True, number_components = 5) :
         mat_value = self.train_set if train else self.test_set
 
         #Store the value in a DataFrame
@@ -97,13 +97,36 @@ class DataViz:
         principal_components = pca.fit_transform(df_features)
 
         #Store the PCA values in a DataFrame
-        principal_comp_df = pd.DataFrame(data=principal_components, columns=['pc_1','pc_2'])
+        principal_comp_df = pd.DataFrame(data=principal_components, columns=['pc_1','pc_2','pc_3','pc_4','pc_5'])
 
-        #Add the target values
+        #Add the target values and rename it
         final_df = pd.concat([principal_comp_df, df.iloc[:,36]], axis = 1)
         final_df = final_df.rename(columns={36:"target"})
 
         print(final_df.head())
+        
+
+        # Explained variance plot
+        plt.bar(range(1,len(pca.explained_variance_)+1),pca.explained_variance_)
+        plt.ylabel("Explained variance")
+        plt.xlabel("Components")
+        plt.title("Explained variance Plot")
+        plt.plot(range(1,len(pca.explained_variance_ )+1),
+                np.cumsum(pca.explained_variance_),
+                c='red',
+                label="Cumulative Explained Variance")
+        plt.legend(loc='upper left')
+        plt.tight_layout()
+        plt.show()
+
+        #Scree plot
+        plt.plot(pca.explained_variance_)
+        plt.xlabel('Number of components')
+        plt.ylabel('Cumulative explained variance')
+        plt.tight_layout()
+        plt.show()
+        #First component is plotted at 0 in xscale
+
 
         #2D projection
         
@@ -119,6 +142,7 @@ class DataViz:
         #colors for our different labels
         colors = ['crimson', 'bisque', 'silver', 'dimgrey', 'limegreen', 'royalblue', 'blueviolet']
         
+        #We plot with only the two first components
         for target, color in zip(targets,colors):
             indicesToKeep = final_df['target'] == target
             ax.scatter(final_df.loc[indicesToKeep, 'pc_1']
