@@ -13,6 +13,8 @@ def main():
     plt.show()
     test.plot_pca(pca, principal_components, test.train_set.iloc[:, 36])
     plt.show()
+    test.plot_line_pixel_value(spectrum_index=[3])
+    plt.show()
 
 
 if __name__ == '__main__':

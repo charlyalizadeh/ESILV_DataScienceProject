@@ -71,20 +71,23 @@ class DataViz:
                             data=pd.melt(df, ['Pixel Value']),
                             **kwargs)
 
-    def plot_line_pixel_value(self, pixel_index=range(8),
+    def plot_line_pixel_value(self, pixel_index=range(9),
                               spectrum_index=range(4), train=True, **kwargs):
-        x = []
-        y = []
-        h = []
-        mat_value = self.train_set if train else self.test_set
+        df = self.train_set if train else self.test_set
+        classes = df['Class'].tolist() * len(pixel_index)
         pixel_index = [p * 4 for p in pixel_index]
-        for row in mat_value:
-            for pindex in pixel_index:
-                x.append(row[-1])
-                y.append(sum(row[pindex + i] for i in spectrum_index) /
-                         len(spectrum_index))
-                h.append(int(pindex / 4))
-        return sns.stripplot(x=x, y=y, hue=h)
+        means = []
+        pixel_position = []
+        for p in pixel_index:
+            temp = df.iloc[:, [p + s for s in spectrum_index]].mean(axis=1)
+            means.extend(temp.tolist())
+            pixel_position.extend([int(p / 4) for i in range(len(df))])
+        ax = sns.stripplot(x=classes, y=means, hue=pixel_position, **kwargs)
+        ax.set(xlabel='Class',
+               ylabel='Pixel Value',
+               title='Plot of classes by pixel value and pixel position.')
+        plt.legend(title='Pixel position')
+        return ax
 
     def plot_bar_class(self, train=True):
         """Bar plot the number of observations by class.
