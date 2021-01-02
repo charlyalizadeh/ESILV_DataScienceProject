@@ -71,8 +71,9 @@ class DataViz:
                             data=pd.melt(df, ['Pixel Value']),
                             **kwargs)
 
-    def plot_line_pixel_value(self, pixel_index=range(9),
-                              spectrum_index=range(4), train=True, **kwargs):
+    def plot_pixel_value(self, pixel_index=range(9),
+                              spectrum_index=range(4), train=True, labels=True,
+                              **kwargs):
         df = self.train_set if train else self.test_set
         classes = df['Class'].tolist() * len(pixel_index)
         pixel_index = [p * 4 for p in pixel_index]
@@ -83,11 +84,38 @@ class DataViz:
             means.extend(temp.tolist())
             pixel_position.extend([int(p / 4) for i in range(len(df))])
         ax = sns.stripplot(x=classes, y=means, hue=pixel_position, **kwargs)
-        ax.set(xlabel='Class',
-               ylabel='Pixel Value',
-               title='Plot of classes by pixel value and pixel position.')
-        plt.legend(title='Pixel position')
+        if labels:
+            ax.set(xlabel='Class',
+                   ylabel='Pixel Value',
+                   title='Plot of classes by pixel value and pixel position.')
+        ax.legend(title='Pixel position')
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=30)
+        ax.legend(loc='upper left')
         return ax
+
+    def plot_pixel_value_by_pixel_index(self, spectrum_index=range(4)):
+        fig, axs = plt.subplots(3, 3)
+        palette = sns.color_palette('husl', 9)
+        for i in range(3):
+            for j in range(3):
+                self.plot_pixel_value([i * 3 + j],
+                                      spectrum_index,
+                                      labels=False,
+                                      ax=axs[i, j],
+                                      palette=[palette[i * 3 + j]]
+                                      )
+        return fig
+
+    def plot_pixel_value_by_spectrum_index(self, pixel_index=range(9)):
+        fig, axs = plt.subplots(2, 2)
+        for i in range(2):
+            for j in range(2):
+                self.plot_pixel_value(pixel_index,
+                                      [i * 2 + j],
+                                      labels=False,
+                                      ax=axs[i, j],
+                                      )
+        return fig
 
     def plot_bar_class(self, train=True):
         """Bar plot the number of observations by class.
