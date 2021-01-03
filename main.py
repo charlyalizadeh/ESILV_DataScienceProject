@@ -1,23 +1,14 @@
 from dataviz import DataViz
+from models import Model
 import matplotlib.pyplot as plt
 
 
 def main():
-    test = DataViz()
-    test.data.import_train_set_from_txt("./sat.trn")
-    test.data.import_test_set_from_txt("./sat.tst")
-    pca, principal_components = test.get_pca(True, 6)
-    test.plot_scree(pca)
-    plt.show()
-    test.plot_explained_variance(pca)
-    plt.show()
-    test.plot_pca(pca, principal_components, test.train_set.iloc[:, 36])
-    plt.show()
-    test.plot_pixel_value(spectrum_index=[3])
-    plt.show()
-    test.plot_pixel_value_by_pixel_index()
-    test.plot_pixel_value_by_spectrum_index()
-    plt.show()
+    model = Model()
+    model.data.import_train_set_from_txt("./sat.tst")
+    model.data.import_test_set_from_txt("./sat.trn")
+    mymodel = model.build_rf_boostrsap()
+    print(model.predict(mymodel))
 
 
 if __name__ == '__main__':
