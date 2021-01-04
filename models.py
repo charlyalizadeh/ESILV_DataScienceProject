@@ -1,4 +1,6 @@
 from datawrapper import DataWrapper
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import BaggingClassifier
 from sklearn.model_selection import cross_val_score
@@ -12,6 +14,26 @@ class Model:
 
     def __init__(self, data=None):
         self.data = DataWrapper() if data is None else data
+
+    def build_decisiontree(self, fit=False, train=None, **kwargs):
+        model = DecisionTreeClassifier(**kwargs)
+        if fit:
+            if train is None:
+                train = self.train_set
+            features = train.iloc[:, :36].to_numpy()
+            classes = train.iloc[:, :36].to_numpy()
+            model.fit(features, classes)
+        return model
+
+    def build_logisticregression(self, fit=False, train=None, **kwargs):
+        model = LogisticRegression(**kwargs)
+        if fit:
+            if train is None:
+                train = self.train_set
+            features = train.iloc[:, :36].to_numpy()
+            classes = train.iloc[:, :36].to_numpy()
+            model.fit(features, classes)
+        return model
 
     def build_rf_boostrsap(self, fit=False, train=None, **kwargs):
         model = RandomForestClassifier(bootstrap=True, **kwargs)
