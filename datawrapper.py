@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
+from sklearn.model_selection import KFold
 from utils import convert_numpy_arr_to_df
 
 
@@ -54,8 +55,8 @@ class DataWrapper:
     def apply_scaler(self, scaler):
         self.unscaled_train_set = self.train_set
         self.unscaled_test_set = self.test_set
-        self.train_set = scaler.fit_transform(self.train_set)
-        self.test_set = scaler.fit_transform(self.test_set)
+        self.train_set.iloc[:, :36] = scaler.fit_transform(self.train_set.iloc[:, :36])
+        self.test_set.iloc[:, :36] = scaler.fit_transform(self.test_set.iloc[:, :36])
 
     def scale(self, scaler_type="standard", **kwargs):
         scaler = None
@@ -65,4 +66,8 @@ class DataWrapper:
             scaler = preprocessing.MinMaxScaler(**kwargs)
         elif scaler_type == "normalize":
             scaler = preprocessing.Normalizer(**kwargs)
-        self._scale(scaler)
+        self.apply_scaler(scaler)
+
+    def split_train_folds(self, n_splits=10):
+        kf = KFold(n_splits=n_splits)
+        return kf.split(self.train_set)
