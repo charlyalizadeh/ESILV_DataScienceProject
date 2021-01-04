@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn import preprocessing
 from utils import convert_numpy_arr_to_df
 
 
@@ -49,3 +50,19 @@ class DataWrapper:
         """
 
         self.test_set = convert_numpy_arr_to_df(test_set, 36, self.label)
+
+    def apply_scaler(self, scaler):
+        self.unscaled_train_set = self.train_set
+        self.unscaled_test_set = self.test_set
+        self.train_set = scaler.fit_transform(self.train_set)
+        self.test_set = scaler.fit_transform(self.test_set)
+
+    def scale(self, scaler_type="standard", **kwargs):
+        scaler = None
+        if scaler_type == "standard":
+            scaler = preprocessing.StandardScaler(**kwargs)
+        elif scaler_type == "minmax":
+            scaler = preprocessing.MinMaxScaler(**kwargs)
+        elif scaler_type == "normalize":
+            scaler = preprocessing.Normalizer(**kwargs)
+        self._scale(scaler)
