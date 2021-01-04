@@ -6,7 +6,7 @@ def main():
     test = DataViz()
     test.import_train_set_from_txt("./sat.trn")
     test.import_test_set_from_txt("./sat.tst")
-    #pca, principal_components = test.get_pca(True, 6)
+    pca, principal_components = test.get_pca(True, 6)
     #test.plot_scree(pca)
     #plt.show()
     #test.plot_explained_variance(pca)
