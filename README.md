@@ -41,7 +41,7 @@ Create a virtual environment and install the `requirements.txt`.
 
 ```
 > python3 -m venv .venv 
-> tutorial-env\Scripts\activate.bat
+> .venv\Scripts\activate.bat
 > pip install -r requirements.txt
 ```
 
