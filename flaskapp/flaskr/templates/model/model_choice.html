@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{{ super() }}
+<div style="text-align:center;">
+    <a href="{{ url_for("model.model_settings", comparison_id=comparison_id, model_type="Random Forest Bagging")}}">
+        <input class="btn btn-default" type="button" value="Random Forest Bagging">
+    </a></br>
+    <a href="{{ url_for("model.model_settings", comparison_id=comparison_id, model_type="Random Forest")}}">
+        <input class="btn btn-default" type="button" value="Random Forest">
+    </a></br>
+    <a href="{{ url_for("model.model_settings", comparison_id=comparison_id, model_type="Decision Tree")}}">
+        <input class="btn btn-default" type="button" value="Decision Tree">
+    </a></br>
+    <a href="{{ url_for("model.model_settings", comparison_id=comparison_id, model_type="Logistic Regression")}}">
+        <input class="btn btn-default" type="button" value="Logistic Regression">
+    </a></br>
+<div>
+{% endblock %}
