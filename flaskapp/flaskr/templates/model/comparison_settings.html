@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{{ super() }}
+
+<div style="text-align:center;" class="col-md-4 col-lg-offset-4">
+    <h1>Comparison settings</h1>
+</div>
+<div class="col-md-4 col-lg-offset-4">
+<ul class="list-group">
+    <li class="list-group-item active">Models</li>
+    {%if not models %}
+        <li class="list-group-item"> No models </li>
+    {% else %}
+        {% for model in models %}
+            <li class="list-group-item"> 
+                {{ model.title }}
+                <a class="action" href="">
+                    <input type="button" class="btn btn-warning" value="Edit">
+                </a>
+                <a class="action" href="{{ url_for('model.delete_model',
+                                                   comparison_id=comparison_id,
+                                                   model_id=model.id)}}">
+                    <input type="button" class="btn btn-danger" value="Delete">
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+</ul>
+</div>
+
+<div style="text-align:center;" class="col-md-4 col-lg-offset-4">
+    <a  class="action" href="{{ url_for('model.model_choice', comparison_id=comparison_id) }}">
+        <input type="button" value="Add model" class="btn btn-secondary">
+    </a>
+</div>
+
+
+<div style="text-align:center;" class="col-md-4 col-lg-offset-4">
+<form method="post" action="{{ url_for('model.comparison_settings', comparison_id=comparison_id) }}">
+    {{ settings_form.hidden_tag() }}
+    {{ wtf.quick_form(settings_form)}}
+</form>
+</div>
+
+{% endblock %}

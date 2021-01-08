@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{{ super() }}
+    <div class="col-auto" style="margin: auto; width: 50% !important;">
+        <table class="table table-striped" >
+            <tr>
+                <th> Comparison ID</th>
+                <th> Number of model(s)</th>
+                <th> Solved</th>
+            {% for comparison in comparisons %}
+                <tr>
+                    <th>{{ comparison['id'] }}</th>
+                    <th>{{ comparison['nb_model'] }}</th>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

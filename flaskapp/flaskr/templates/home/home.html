@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+
+<div style="margin-left: auto; margin-right: auto; width: 25em">
+<h1 id="data-science-project-esilv">Data Science Project</h1>
+</div><br>
+
+<div style="margin-left: auto; margin-right: auto; width: 50em">
+<p class="lead">Hi ! Welcome on the API for ou data science project. This API let you build and compare different types of classifier.
+On this home page you can also find our results on finding the best classifier.
+We tried multiple comparison. First we compared the four classifier with the default values for the hyperparameters. We found the following results on the test dataset:</p>
+</div>
+
+<div class="col-auto" style="margin: auto; width: 50em;">
+    <table class="table table-striped">
+        <tr>
+            <th> Classifier </th>
+            <th> Accuracy </th>
+        </tr>
+        
+            
+            <tr>
+                <td>BaggingClassifier</td>
+                <td>0.886</td>
+            </tr>
+            
+            <tr>
+                <td>RandomForestClassifier</td>
+                <td>0.893</td>
+            </tr>
+            
+            <tr>
+                <td>DecisionTreeClassifier</td>
+                <td>0.8485</td>
+            </tr>
+            
+            <tr>
+                <td>LogisticRegression</td>
+                <td>0.8395</td>
+            </tr>
+            
+        
+    </table>
+</div>
+
+
+<div style="margin-left: auto; margin-right: auto; width: 50em">
+<p class="lead">We then tried to compare the <code>BaggingClassifier</code> and the <code>RandomForestClassifier</code>
+</div>
+
+<div class="col-auto" style="margin: auto; width: 50em">
+    <table class="table table-striped">
+        <tr>
+            <th> Classifier </th>
+            <th> Accuracy </th>
+        </tr>
+        
+            
+            <tr>
+                <td>BaggingClassifier(base_estimator=DecisionTreeClassifier(), n_estimators=15)</td>
+                <td>0.8855</td>
+            </tr>
+            
+            <tr>
+                <td>RandomForestClassifier(n_estimators=15)</td>
+                <td>0.8945</td>
+            </tr>
+            
+        
+    </table>
+</div>
+
+
+<div style="margin-left: auto; margin-right: auto; width: 50em">
+<p class="lead">As we can see the <code>RandomForestClassifier</code> is slightly more performant than the <code>BaggingClassifier</code>.
+We tested different number of estimators for those two classifier and found that 100 was the one giving the best performances.<br/>
+</div>
+
+<img style="display: block; margin-left: auto; margin-right: auto "src={{ url_for("static", filename="nestimators_test2.png")}}><br/>
+
+{% endblock %}

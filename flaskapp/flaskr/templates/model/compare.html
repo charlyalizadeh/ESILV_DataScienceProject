@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+<div style="text-align:center;" class="col-md-4 col-lg-offset-4">
+    <h1 class="page-header">Results</h1>
+    <h2 class="page-header"> Results of the Cross Validation </h2>
+</div>
+<div class="col-auto" style="margin: auto; width: 50% !important;">
+    <table class="table table-striped">
+        <tr>
+            <th> Classifier </th>
+            <th> Accuracy </th>
+        </tr>
+        {% if accuracies_cv %}
+            {% for title, accuracy in accuracies_cv.items() %}
+            <tr>
+                <td>{{ title }}</td>
+                <td>{{ accuracy }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+</div>
+
+<div style="text-align:center;" class="col-md-4 col-lg-offset-4">
+    <h2 class="page-header"> Results on the test set </h2>
+</div>
+<div class="col-auto" style="margin: auto; width: 50% !important;">
+    <table class="table table-striped">
+        <tr>
+            <th> Classifier </th>
+            <th> Accuracy </th>
+        </tr>
+        {% if accuracies_test %}
+            {% for title, accuracy in accuracies_test.items() %}
+            <tr>
+                <td>{{ title }}</td>
+                <td>{{ accuracy }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+</div>
+{% endblock %}
