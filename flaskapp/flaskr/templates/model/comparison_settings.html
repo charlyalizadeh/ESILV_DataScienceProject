@@ -16,7 +16,7 @@
         {% for model in models %}
             <li class="list-group-item"> 
                 {{ model.title }}
-                <a class="action" href="">
+                <a class="action" href="{{ url_for('home.not_implemented')}}">
                     <input type="button" class="btn btn-warning" value="Edit">
                 </a>
                 <a class="action" href="{{ url_for('model.delete_model',
@@ -36,12 +36,12 @@
     </a>
 </div>
 
-
 <div style="text-align:center;" class="col-md-4 col-lg-offset-4">
-<form method="post" action="{{ url_for('model.comparison_settings', comparison_id=comparison_id) }}">
-    {{ settings_form.hidden_tag() }}
-    {{ wtf.quick_form(settings_form)}}
-</form>
+    <a  class="action" href="{{ url_for('model.compare', comparison_id=comparison_id) }}">
+        <input type="button" value="Compare" class="btn btn-primary">
+    </a>
 </div>
+
+
 
 {% endblock %}

@@ -6,13 +6,28 @@
     <div class="col-auto" style="margin: auto; width: 50% !important;">
         <table class="table table-striped" >
             <tr>
-                <th> Comparison ID</th>
-                <th> Number of model(s)</th>
-                <th> Solved</th>
+                <th>Comparison ID</th>
+                <th>Comparison Name</th>
+                <th>Number of model(s)</th>
+                <th>Creation date</th>
+                <th></th>
+                <th></th>
             {% for comparison in comparisons %}
                 <tr>
                     <th>{{ comparison['id'] }}</th>
+                    <th>{{ comparison['name'] }}</th>
                     <th>{{ comparison['nb_model'] }}</th>
+                    <th>{{ comparison['time_creation'] }}</th>
+                    <th>
+                        <a href="{{ url_for('model.comparison_settings', comparison_id= comparison['id'])}}">
+                            <input type="button" value="Edit" class="btn btn-warning">
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('model.delete_comparison', comparison_id=comparison['id'])}}">
+                            <input type="button" value="Delete" class="btn btn-danger">
+                        </a>
+                    </th>
                 </tr>
             {% endfor %}
         </table>

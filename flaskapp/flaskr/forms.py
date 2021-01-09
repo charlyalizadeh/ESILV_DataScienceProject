@@ -1,10 +1,18 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField, BooleanField, FloatField, SubmitField, FormField, FieldList
+from wtforms import (
+    IntegerField,
+    SelectField,
+    BooleanField,
+    FloatField,
+    SubmitField,
+    StringField,
+)
 from wtforms.validators import DataRequired, NumberRange, Optional, InputRequired
 
 
 class ComparisonSettingsForm(FlaskForm):
-    cv_folds = IntegerField("Cross-validation folds", default=5, validators=[InputRequired()])
+    name = StringField("Name model", validators=[InputRequired()])
+    cv = IntegerField("Cross-validation folds", default=5, validators=[InputRequired()])
     scale_method = SelectField("Scale", choices=["none", "standard", "minmax", "normalize"], default="standard")
     submit = SubmitField("Compare")
 

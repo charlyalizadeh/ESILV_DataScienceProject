@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block content %}
+{{ super() }}
+
+<div style="text-align:center;" class="col-md-4 col-lg-offset-4">
+<form method="post" action="{{ url_for('model.init_comparison') }}">
+    {{ settings_form.hidden_tag() }}
+    {{ wtf.quick_form(settings_form)}}
+</form>
+</div>
+
+{% endblock %}

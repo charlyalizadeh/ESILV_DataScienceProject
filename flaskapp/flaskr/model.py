@@ -5,7 +5,12 @@ from flask import (
 from dataanalyse.datawrapper import DataWrapper
 from dataanalyse.models import build_model, cross_validate, predict
 from flaskr.db import get_db
-from flaskr.queries import get_models_comparison, get_predictions
+from flaskr.queries import (
+    db_get_models_comparison,
+    db_get_predictions,
+    db_delete_comparison,
+    db_get_comparison
+)
 from flaskr.forms import (
         ComparisonSettingsForm,
         RFBaggingForm,
@@ -18,14 +23,21 @@ from joblib import dump, load
 bp = Blueprint('model', __name__, url_prefix='/model')
 
 
-@bp.route('/init', methods=('GET', 'POST'))
-def init():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute('INSERT INTO comparison DEFAULT VALUES;')
-    db.commit()
-    comparison_id = cursor.lastrowid
-    return redirect(url_for('model.comparison_settings', comparison_id=comparison_id))
+@bp.route('/init_comparison', methods=('GET', 'POST'))
+def init_comparison():
+    settings_form = ComparisonSettingsForm(request.form)
+    if settings_form.validate_on_submit():
+        name = settings_form.name.data
+        cv = settings_form.cv.data
+        scale_method = settings_form.scale_method.data
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO comparison (name, cv, scale_method) VALUES (?, ?, ?);',
+                       (name, cv, scale_method,))
+        db.commit()
+        comparison_id = cursor.lastrowid
+        return redirect(url_for('model.comparison_settings', comparison_id=comparison_id))
+    return render_template('model/init_comparison.html', settings_form=settings_form)
 
 
 @bp.route('/comparison_settings/<int:comparison_id>', methods=('GET', 'POST'))
@@ -37,20 +49,7 @@ def comparison_settings(comparison_id):
             ' WHERE cmp.comparison_id = ?',
             (comparison_id,)
     ).fetchall()
-    settings_form = ComparisonSettingsForm(request.form)
-    print(settings_form.data)
-    print("Checking Settings form validation")
-    if settings_form.validate_on_submit():
-        cv_folds = settings_form.cv_folds.data
-        scale_method = settings_form.scale_method.data
-        print("Settings form validated")
-        if models is not None:
-            return redirect(url_for('model.compare',
-                                    comparison_id=comparison_id,
-                                    cv_folds=cv_folds,
-                                    scale_method=scale_method))
     return render_template('model/comparison_settings.html',
-                           settings_form=settings_form,
                            models=models,
                            comparison_id=comparison_id)
 
@@ -77,13 +76,14 @@ def model_settings(comparison_id, model_type):
                            settings_form=settings_form)
 
 
-@bp.route('/compare/<int:comparison_id>/<int:cv_folds>/<scale_method>/', methods=('GET', 'POST'))
-def compare(comparison_id, cv_folds, scale_method):
+@bp.route('/compare/<int:comparison_id>', methods=('GET', 'POST'))
+def compare(comparison_id):
     db = get_db()
-    data = get_datawrapper(scale=scale_method)
-    model_rows = get_models_comparison(db, comparison_id)
+    comparison = db_get_comparison(db, comparison_id)
+    data = get_datawrapper(scale=comparison['scale_method'])
+    model_rows = db_get_models_comparison(db, comparison_id)
     models = [load(f"{query['storage_path']}/{query['id']}.joblib") for query in model_rows]
-    accuracies_cv, best_model, best_accuracy = cross_validate(models, data.train_set)
+    accuracies_cv, best_model, best_accuracy = cross_validate(models, data.train_set, cv=comparison['cv'])
     title = [query['title'] for query in model_rows]
     accuracies_cv = dict(zip(title, accuracies_cv))
     accuracies_test = []
@@ -95,6 +95,13 @@ def compare(comparison_id, cv_folds, scale_method):
                            comparison_id=comparison_id,
                            accuracies_cv=accuracies_cv,
                            accuracies_test=accuracies_test)
+
+
+@bp.route('/delete_comparison/<int:comparison_id>', methods=('GET', 'POST'))
+def delete_comparison(comparison_id):
+    db = get_db()
+    db_delete_comparison(db, comparison_id)
+    return redirect(url_for('model.comparison_list'))
 
 
 @bp.route('/delete_model/<int:comparison_id>/<int:model_id>', methods=('GET', 'POST'))
@@ -116,6 +123,7 @@ def comparison_list():
     if comparisons:
         print(comparisons[0].keys())
     return render_template('model/comparison_list.html', comparisons=comparisons)
+
 
 
 def get_datawrapper(path_trn="flaskr/static/data/sat.trn", path_tst="flaskr/static/data/sat.tst", scale="none"):
