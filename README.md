@@ -17,7 +17,7 @@ Create a virtual environment and install the `requirements.txt`.
 
 ```bash
 $ python3 -m venv .venv 
-$ source .venv/bin/activate
+$ source .venv/bin/activate # zsh and fish scripts are also available
 $ pip install -r requirements.txt
 ```
 
@@ -25,7 +25,9 @@ Init the database and run the flask API.
 
 ```bash
 cd flaskapp
-source ./scripts/init_run.sh
+export FLASK_APP=flaskr
+export FLASK_ENV=development
+flask run
 ```
 
 ### Windows

@@ -3,3 +3,4 @@ __pycache__
 .vscode
 *.joblib
 *.sqlite
+*.ipynb_checkpoints
