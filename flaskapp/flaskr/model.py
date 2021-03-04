@@ -19,6 +19,7 @@ from flaskr.forms import (
         LogisticRegressionForm
         )
 from joblib import dump, load
+import os
 
 bp = Blueprint('model', __name__, url_prefix='/model')
 
@@ -163,6 +164,8 @@ def add_model(comparison_id, model_type, **kwargs):
     model_id = cursor.lastrowid
 
     # Save the model in statics files
+    if not os.path.exists('flaskr/static/models/'):
+        os.mkdir('flaskr/static/models/')
     dump(model, f'flaskr/static/models/{model_id}.joblib')
 
     # Create a comparison/model pair in DB
