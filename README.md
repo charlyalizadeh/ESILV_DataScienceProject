@@ -27,6 +27,7 @@ Init the database and run the flask API.
 cd flaskapp
 export FLASK_APP=flaskr
 export FLASK_ENV=development
+flask init-db
 flask run
 ```
 
